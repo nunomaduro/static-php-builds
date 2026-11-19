@@ -96,14 +96,54 @@ case "$platform" in
 linux-x86_64)
   spc_asset=spc-linux-x86_64.tar.gz
   spc_sha256=$SPC_SHA256_LINUX_X86_64
+  zig_package=zig-x86_64-linux
   export SPC_TARGET="x86_64-linux-gnu.${GLIBC_VERSION}"
   ;;
 linux-aarch64)
   spc_asset=spc-linux-aarch64.tar.gz
   spc_sha256=$SPC_SHA256_LINUX_AARCH64
+  zig_package=zig-aarch64-linux
   export SPC_TARGET="aarch64-linux-gnu.${GLIBC_VERSION}"
   ;;
 esac
+
+url_pins=()
+git_pins=()
+while read -r pin_kind pin_source pin_target pin_url; do
+  case $pin_kind in
+  url)
+    [[ $pin_target =~ ^[A-Za-z0-9._-]+$ ]] || fail "the pin of [$pin_source] in [config/sources.pins] has an invalid file name [$pin_target]"
+    [[ $pin_url == https://* ]] || fail "the pin of [$pin_source] in [config/sources.pins] has no https URL"
+    url_pins+=("$pin_source $pin_target $pin_url")
+    ;;
+  git)
+    [[ $pin_target =~ ^[0-9a-f]{40}$ && -z $pin_url ]] || fail "the pin of [$pin_source] in [config/sources.pins] has no full commit"
+    git_pins+=("$pin_source $pin_target")
+    ;;
+  *) fail "the pin of [$pin_source] in [config/sources.pins] has an unknown kind [$pin_kind]" ;;
+  esac
+done <"$ROOT_DIR/config/sources.pins"
+
+download_url_pins() {
+  local pin source file url
+  pin_options=()
+  for pin in "${url_pins[@]}"; do
+    read -r source file url <<<"$pin"
+    download "$url" "$work/pins/$file"
+    pin_options+=("--custom-url=${source}:file://$work/pins/$file")
+  done
+}
+
+check_out_git_pins() {
+  local pin source commit clone
+  for pin in "${git_pins[@]}"; do
+    read -r source commit <<<"$pin"
+    clone="$work/downloads/$source"
+    [[ -d $clone ]] || continue
+    git -C "$clone" checkout --quiet --detach "$commit" || fail "the clone of [$source] has no commit [$commit]"
+    git -C "$clone" submodule update --quiet --recursive
+  done
+}
 
 record_sources() {
   local path name
@@ -136,6 +176,10 @@ if [[ $branch == 8.6 ]]; then
 fi
 
 echo "::group::Install build tools"
+zig_file="${zig_package}-${ZIG_VERSION}.tar.xz"
+mkdir -p "$work/pins"
+download "https://ziglang.org/download/${ZIG_VERSION}/${zig_file}" "$work/pins/$zig_file"
+"$work/spc" install-pkg "$zig_package" --custom-url="${zig_package}:file://$work/pins/$zig_file"
 "$work/spc" doctor --auto-fix
 echo "::endgroup::"
 
@@ -146,14 +190,17 @@ for mirror in "${SPC_SOURCE_MIRRORS[@]}"; do
   validate_sha256 "$mirror_sha256"
   mirror_options+=("--custom-url=${mirror_source}:${mirror_url}")
 done
+download_url_pins
 
 spc_download \
   "${mirror_options[@]}" \
+  "${pin_options[@]}" \
   --with-php="$branch" \
   --for-extensions="${extensions},xdebug" \
   --custom-url="php-src:${source_url}" \
   --custom-url="xdebug:https://xdebug.org/files/xdebug-${XDEBUG_VERSION}.tgz" \
   --retry=3
+check_out_git_pins
 
 php_source="$work/downloads/php-${version}.tar.xz"
 [[ -f $php_source ]] || fail "PHP source not found at $php_source"

@@ -1,0 +1,40 @@
+git ext-zstd 88bbb436b0b8130f771043dbcb05e6fe62e0f654
+git libaom 30bf553cc718e7a82a17242e6ac90ad0aaae2ba3
+git libjxl d1cad8bcb1cb3159a5dfaf367e340d29a792df47
+git micro fb6d497b6f4cf138ee3851a30c905d64b7b19aed
+git qdbm a56775d9730fbc793d012092270367eb2284da07
+url brotli google-brotli-go-brotli-v1.2.1-0-gdb24a98.tar.gz https://codeload.github.com/google/brotli/legacy.tar.gz/refs/tags/v1.2.1
+url curl curl-8.23.0.tar.xz https://github.com/curl/curl/releases/download/curl-8_23_0/curl-8.23.0.tar.xz
+url frankenphp php-frankenphp-caddy-v1.13.6-0-g6775138.tar.gz https://codeload.github.com/php/frankenphp/legacy.tar.gz/refs/tags/v1.13.6
+url freetype freetype-freetype-VER-2-15-0-0-g37515cf.tar.gz https://codeload.github.com/freetype/freetype/legacy.tar.gz/refs/tags/VER-2-15-0
+url icu icu4c-77_1-src.tgz https://github.com/unicode-org/icu/releases/download/release-77-1/icu4c-77_1-src.tgz
+url imagemagick ImageMagick-ImageMagick-7.1.2-36-0-gdcec873.tar.gz https://codeload.github.com/ImageMagick/ImageMagick/legacy.tar.gz/refs/tags/7.1.2-36
+url ldap openldap-2.7.2.tgz https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.7.2.tgz
+url lerc Esri-lerc-v4.3.0-0-gbbd9531.tar.gz https://codeload.github.com/Esri/lerc/legacy.tar.gz/refs/tags/v4.3.0
+url libavif AOMediaCodec-libavif-v1.4.2-0-gc5240fc.tar.gz https://codeload.github.com/AOMediaCodec/libavif/legacy.tar.gz/refs/tags/v1.4.2
+url libcares c-ares-1.34.9.tar.gz https://github.com/c-ares/c-ares/releases/download/v1.34.9/c-ares-1.34.9.tar.gz
+url libde265 libde265-1.1.3.tar.gz https://github.com/strukturag/libde265/releases/download/v1.1.3/libde265-1.1.3.tar.gz
+url libedit libedit-20260512-3.1.tar.gz https://thrysoee.dk/editline/libedit-20260512-3.1.tar.gz
+url libffi libffi-3.8.1.tar.gz https://github.com/libffi/libffi/releases/download/v3.8.1/libffi-3.8.1.tar.gz
+url libheif libheif-1.23.7.tar.gz https://github.com/strukturag/libheif/releases/download/v1.23.7/libheif-1.23.7.tar.gz
+url libjpeg libjpeg-turbo-libjpeg-turbo-3.2.1-0-g7b49937.tar.gz https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/legacy.tar.gz/refs/tags/3.2.1
+url liblz4 lz4-1.11.1.tar.gz https://github.com/lz4/lz4/releases/download/v1.11.1/lz4-1.11.1.tar.gz
+url libpng pnggroup-libpng-v1.6.59-0-gcd952f4.tar.gz https://codeload.github.com/pnggroup/libpng/legacy.tar.gz/refs/tags/v1.6.59
+url libsodium libsodium-1.0.22.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.22-RELEASE/libsodium-1.0.22.tar.gz
+url libssh2 libssh2-1.11.1.tar.gz https://github.com/libssh2/libssh2/releases/download/libssh2-1.11.1/libssh2-1.11.1.tar.gz
+url libtiff tiff-4.7.2.tar.xz https://download.osgeo.org/libtiff/tiff-4.7.2.tar.xz
+url libwebp webmproject-libwebp-v1.6.0-0-g4fa2191.tar.gz https://codeload.github.com/webmproject/libwebp/legacy.tar.gz/refs/tags/v1.6.0
+url libxml2 GNOME-libxml2-v2.15.4-0-g9649899.tar.gz https://codeload.github.com/GNOME/libxml2/legacy.tar.gz/refs/tags/v2.15.4
+url libxslt libxslt-1.1.45.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.45.tar.xz
+url libzip libzip-1.12.1.tar.xz https://github.com/nih-at/libzip/releases/download/v1.12.1/libzip-1.12.1.tar.xz
+url mongodb mongodb-2.5.8.tgz https://github.com/mongodb/mongo-php-driver/releases/download/2.5.8/mongodb-2.5.8.tgz
+url nghttp2 nghttp2-1.71.0.tar.xz https://github.com/nghttp2/nghttp2/releases/download/v1.71.0/nghttp2-1.71.0.tar.xz
+url nghttp3 nghttp3-1.19.0.tar.xz https://github.com/ngtcp2/nghttp3/releases/download/v1.19.0/nghttp3-1.19.0.tar.xz
+url ngtcp2 ngtcp2-1.26.0.tar.xz https://github.com/ngtcp2/ngtcp2/releases/download/v1.26.0/ngtcp2-1.26.0.tar.xz
+url onig onig-6.9.10.tar.gz https://github.com/kkos/oniguruma/releases/download/v6.9.10/onig-6.9.10.tar.gz
+url openssl openssl-3.6.5.tar.gz https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz
+url postgresql postgres-postgres-REL_18_7-0-gf5c41f6.tar.gz https://codeload.github.com/postgres/postgres/legacy.tar.gz/refs/tags/REL_18_7
+url watcher e-dant-watcher-release-0.14.5-0-g06f84a1.tar.gz https://codeload.github.com/e-dant/watcher/legacy.tar.gz/06f84a1314be18f5e697ebbf28c0fab2d17c9c39
+url xz xz-5.8.4.tar.xz https://github.com/tukaani-project/xz/releases/download/v5.8.4/xz-5.8.4.tar.xz
+url zlib zlib-1.4.tar.gz https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.gz
+url zstd zstd-1.5.7.tar.gz https://github.com/meta/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz

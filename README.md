@@ -106,7 +106,7 @@ The **Release** workflow builds each release. For each branch in [`config/php-br
 3. Each build is unpacked and smoke tested: the PHP version, the extensions, Xdebug, Composer, SQLite, intl, HTTPS with the system CA certificates, and the glibc baseline.
 4. The files receive a build attestation and are published as a GitHub release named after the PHP version.
 
-All pinned versions and checksums live in [`config/build.env`](config/build.env). Every other source that goes into a build, down to the compiler toolchain, must match its checksum or commit in [`config/sources.lock`](config/sources.lock), and the build stops when one differs. The release's `share/sources.txt` file records the same list.
+The pinned tools live in [`config/build.env`](config/build.env), and the exact URL or commit of each library lives in [`config/sources.pins`](config/sources.pins), so a new upstream release does not change a build. Every source that goes into a build, down to the compiler toolchain, must match its checksum or commit in [`config/sources.lock`](config/sources.lock), and the build stops when one differs. The release's `share/sources.txt` file records the same list.
 
 ### Running the Release Workflow
 
