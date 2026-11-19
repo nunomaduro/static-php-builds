@@ -1,0 +1,16 @@
+--- a/include/Makemodule.am
++++ b/include/Makemodule.am
+@@ -13,10 +13,10 @@
+ SUBST_INSTALL_HEADER = \
+ 	subst_install_header() { \
+ 	  file=`echo "$$1" | sed -e 's,^.*/,,'`; \
+-	  $(SED) -e "s/\<EXPORT\>/extern/" < "$$1" > "include/$$file.t" || exit 1; \
++	  $(SED) -e "s/\<EXPORT\>/extern/" < "$$1" > "include/$$file.$$$$.t" || exit 1; \
+ 	  $(MKDIR_P) "$$2" || exit 1; \
+-	  $(INSTALL_HEADER) "include/$$file.t" "$$2/$$file" || exit 1; \
+-	  $(RM) "include/$$file.t"; \
++	  $(INSTALL_HEADER) "include/$$file.$$$$.t" "$$2/$$file" || exit 1; \
++	  $(RM) "include/$$file.$$$$.t"; \
+ 	}; \
+ 	subst_install_header
+ 

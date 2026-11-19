@@ -238,6 +238,11 @@ if [[ -n $php_patch ]]; then
   echo "::endgroup::"
 fi
 
+echo "::group::Patch libacl"
+"$work/spc" extract libacl
+patch -p1 -d "$work/source/libacl" <"$ROOT_DIR/patches/libacl-unique-header-temp.patch"
+echo "::endgroup::"
+
 if [[ ,$extensions, == *,imagick,* ]]; then
   echo "::group::Patch libde265"
   "$work/spc" extract libde265
