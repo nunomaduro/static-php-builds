@@ -174,7 +174,7 @@ branch=${version%.*}
 
 if [[ $branch == 8.6 ]]; then
   export SPC_MICRO_PATCHES=disable_huge_page_84
-  export SPC_CMD_PREFIX_PHP_CONFIGURE="./configure ac_cv_have_decl_epoll_pwait2=no --prefix=--with-valgrind=no --disable-shared --enable-static --disable-all --disable-phpdbg --enable-rtld-now --enable-re2c-cgoto --disable-rpath --enable-pic"
+  export SPC_CMD_PREFIX_PHP_CONFIGURE="./configure ac_cv_have_decl_epoll_pwait2=no --prefix= --with-valgrind=no --disable-shared --enable-static --disable-all --disable-phpdbg --enable-rtld-now --enable-re2c-cgoto --disable-rpath --enable-pic"
 fi
 
 echo "::group::Install build tools"
