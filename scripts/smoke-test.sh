@@ -93,13 +93,39 @@ exit((new NumberFormatter("en_US", NumberFormatter::CURRENCY))->formatCurrency(1
 PHP
 check "intl works"
 
-"$php" -- "$trusted_url" <<'PHP' || fail "stream HTTPS requests to [$trusted_url] fail (CA certificates not found?)"
-<?php
-exit(file_get_contents($argv[1]) !== false ? 0 : 1);
-PHP
-check "stream HTTPS requests work with the system CA certificates"
+readonly HTTPS_CHECK_ATTEMPTS=3
+readonly HTTPS_CHECK_RETRY_DELAY_SECONDS=15
 
-"$php" -- "$untrusted_url" <<'PHP' || fail "stream HTTPS accepts the untrusted certificate of [$untrusted_url]"
+run_https_check() {
+  local url=$1 script=$2
+  local attempt
+  for ((attempt = 1; attempt <= HTTPS_CHECK_ATTEMPTS; attempt++)); do
+    "$php" -- "$url" <<<"$script" && return 0
+    ((attempt < HTTPS_CHECK_ATTEMPTS)) || break
+    echo "the HTTPS check of [$url] failed on attempt [$attempt] of [$HTTPS_CHECK_ATTEMPTS]; next attempt in [$HTTPS_CHECK_RETRY_DELAY_SECONDS] seconds" >&2
+    sleep "$HTTPS_CHECK_RETRY_DELAY_SECONDS"
+  done
+  return 1
+}
+
+stream_accepts_trusted=$(
+  cat <<'PHP'
+<?php
+$messages = [];
+set_error_handler(function (int $level, string $message) use (&$messages): bool {
+  $messages[] = $message;
+  return true;
+});
+if (file_get_contents($argv[1]) !== false) {
+  exit(0);
+}
+fwrite(STDERR, implode("\n", $messages) . "\n");
+exit(1);
+PHP
+)
+
+stream_rejects_untrusted=$(
+  cat <<'PHP'
 <?php
 $messages = [];
 set_error_handler(function (int $level, string $message) use (&$messages): bool {
@@ -107,24 +133,52 @@ set_error_handler(function (int $level, string $message) use (&$messages): bool 
   return true;
 });
 $body = file_get_contents($argv[1]);
-exit($body === false && str_contains(implode("\n", $messages), "certificate verify failed") ? 0 : 1);
+$errors = implode("\n", $messages);
+if ($body === false && str_contains($errors, "certificate verify failed")) {
+  exit(0);
+}
+fwrite(STDERR, ($body === false ? $errors : "the request succeeded") . "\n");
+exit(1);
 PHP
+)
+
+curl_accepts_trusted=$(
+  cat <<'PHP'
+<?php
+$curl = curl_init($argv[1]);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+if (curl_exec($curl) !== false) {
+  exit(0);
+}
+fwrite(STDERR, "curl error [" . curl_errno($curl) . "]: [" . curl_error($curl) . "]\n");
+exit(1);
+PHP
+)
+
+curl_rejects_untrusted=$(
+  cat <<'PHP'
+<?php
+$curl = curl_init($argv[1]);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+$body = curl_exec($curl);
+if ($body === false && curl_errno($curl) === CURLE_SSL_CACERT) {
+  exit(0);
+}
+fwrite(STDERR, ($body === false ? "curl error [" . curl_errno($curl) . "]: [" . curl_error($curl) . "]" : "the request succeeded") . "\n");
+exit(1);
+PHP
+)
+
+run_https_check "$trusted_url" "$stream_accepts_trusted" || fail "stream HTTPS requests to [$trusted_url] fail (CA certificates not found?)"
+check "stream HTTPS requests work with the system CA certificates"
+
+run_https_check "$untrusted_url" "$stream_rejects_untrusted" || fail "stream HTTPS does not reject the untrusted certificate of [$untrusted_url]"
 check "stream HTTPS rejects an untrusted certificate"
 
-"$php" -- "$trusted_url" <<'PHP' || fail "curl HTTPS requests to [$trusted_url] fail (CA certificates not found?)"
-<?php
-$curl = curl_init($argv[1]);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-exit(curl_exec($curl) !== false ? 0 : 1);
-PHP
+run_https_check "$trusted_url" "$curl_accepts_trusted" || fail "curl HTTPS requests to [$trusted_url] fail (CA certificates not found?)"
 check "curl HTTPS requests work with the system CA certificates"
 
-"$php" -- "$untrusted_url" <<'PHP' || fail "curl HTTPS accepts the untrusted certificate of [$untrusted_url]"
-<?php
-$curl = curl_init($argv[1]);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-exit(curl_exec($curl) === false && curl_errno($curl) === CURLE_SSL_CACERT ? 0 : 1);
-PHP
+run_https_check "$untrusted_url" "$curl_rejects_untrusted" || fail "curl HTTPS does not reject the untrusted certificate of [$untrusted_url]"
 check "curl HTTPS rejects an untrusted certificate"
 
 composer_version=$("$prefix/bin/composer" --version --no-ansi 2>/dev/null)
