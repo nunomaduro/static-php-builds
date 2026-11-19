@@ -14,6 +14,8 @@ version=${1:-}
 dist=${2:-}
 
 validate_version "$version"
+xdebug=$(xdebug_of_branch "$version")
+read -r XDEBUG_VERSION _ <<<"$xdebug"
 [[ -d $dist ]] || fail "usage: publish-release.sh <version> <dist-dir>"
 
 cd "$dist"

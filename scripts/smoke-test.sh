@@ -10,6 +10,8 @@ version=${2:-}
 
 [[ -f $tarball ]] || fail "usage: smoke-test.sh <tarball> <version>"
 validate_version "$version"
+xdebug=$(xdebug_of_branch "$version")
+read -r XDEBUG_VERSION _ <<<"$xdebug"
 
 prefix=$(mktemp -d)
 trap 'rm -rf "$prefix"' EXIT

@@ -14,6 +14,8 @@ validate_version "$version"
 validate_sha256 "$php_sha256"
 validate_platform "$platform"
 validate_source_url "$version" "$source_url"
+xdebug=$(xdebug_of_branch "$version")
+read -r XDEBUG_VERSION XDEBUG_SHA256 <<<"$xdebug"
 
 github_token=${GITHUB_TOKEN:-}
 unset GITHUB_TOKEN

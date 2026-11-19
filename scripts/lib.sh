@@ -100,6 +100,19 @@ release_state() {
   fi
 }
 
+xdebug_of_branch() {
+  local branch=${1%.*}
+  local entry entry_branch entry_version entry_sha256
+  for entry in "${XDEBUG_BRANCH_VERSIONS[@]}"; do
+    read -r entry_branch entry_version entry_sha256 <<<"$entry"
+    [[ $entry_branch == "$branch" ]] || continue
+    validate_sha256 "$entry_sha256"
+    echo "$entry_version $entry_sha256"
+    return 0
+  done
+  echo "$XDEBUG_VERSION $XDEBUG_SHA256"
+}
+
 extensions_csv() {
   local branch=${1%.*}
   local excluded
