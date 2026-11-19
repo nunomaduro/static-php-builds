@@ -41,12 +41,26 @@ remove_cached_php() {
   rm -f "$work"/downloads/php-*.tar.xz
 }
 
-spc_download() {
+readonly SPC_DOWNLOAD_ATTEMPTS=4
+readonly SPC_DOWNLOAD_RETRY_DELAY_SECONDS=120
+
+spc_download_once() {
   if [[ -n $github_token ]]; then
     GITHUB_TOKEN=$github_token "$work/spc" download "$@"
   else
     "$work/spc" download "$@"
   fi
+}
+
+spc_download() {
+  local attempt
+  for ((attempt = 1; attempt <= SPC_DOWNLOAD_ATTEMPTS; attempt++)); do
+    spc_download_once "$@" && return 0
+    ((attempt < SPC_DOWNLOAD_ATTEMPTS)) || break
+    echo "the download of the sources failed on attempt [$attempt] of [$SPC_DOWNLOAD_ATTEMPTS]; next attempt in [$SPC_DOWNLOAD_RETRY_DELAY_SECONDS] seconds" >&2
+    sleep "$SPC_DOWNLOAD_RETRY_DELAY_SECONDS"
+  done
+  fail "the download of the sources failed after [$SPC_DOWNLOAD_ATTEMPTS] attempts"
 }
 
 verify_sources_lock() {
