@@ -1,2 +1,4 @@
 8.6 igbinary
 8.6 imagick
+8.6 pdo_sqlsrv
+8.6 sqlsrv
